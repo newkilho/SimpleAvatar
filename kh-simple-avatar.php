@@ -1,10 +1,11 @@
 <?php
 /*
 Plugin Name:	Kilho's Simple Avatar
-Plugin URI:		https://kilho.net
+Plugin URI:		https://kilho.net/archives/notice/3771
 Description:	Add a simple avatar upload field to user profiles for custom profile pictures, with automatic resizing and real-time updates.
 Version:		0.9.0
 Author:			Kilho Oh
+Author URI:		https://kilho.net
 License:		GPL v2 or later
 */
 
@@ -80,7 +81,7 @@ function kh_avatar_delete($user_id)
 }
 
 // 커스텀 아바타 URL 설정 함수
-function kh_pre_get_avatar_data($data, $id_or_email)
+function kh_avatar_pre_get_avatar_data($data, $id_or_email)
 {
 	$user_id = null;
 
@@ -125,4 +126,4 @@ function kh_pre_get_avatar_data($data, $id_or_email)
 
 	return $data;
 }
-add_filter('pre_get_avatar_data', 'kh_pre_get_avatar_data', 10, 2);
+add_filter('pre_get_avatar_data', 'kh_avatar_pre_get_avatar_data', 10, 2);
