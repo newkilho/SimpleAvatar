@@ -57,7 +57,7 @@ function kh_avatar_update($user_id)
 
 	if(isset($avatar['error'])) return;
 
-	update_user_meta($user_id, 'kh_avatar', esc_url($avatar['url']));
+	update_user_meta($user_id, 'kh_avatar', esc_url_raw($avatar['url']));
 }
 add_action('personal_options_update', 'kh_avatar_update');
 add_action('edit_user_profile_update', 'kh_avatar_update');
