@@ -1,0 +1,8 @@
+.user-profile-picture > td > .avatar { display: none; }
+.kh-avatar-img {
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	background-color: #fff;
+	cursor: pointer;
+}
+#kh-avatar-file { display: none; }
