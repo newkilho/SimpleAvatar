@@ -26,7 +26,7 @@ jobs:
     - name: Sync Git to SVN
       run: |
         rm -rf svn/trunk/*
-        cp -R * svn/trunk/
+        rsync -a --exclude='svn' ./ svn/trunk/
         cd svn
         svn add --force trunk/*
         svn commit -m "Deploying new version to WordPress SVN" --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
