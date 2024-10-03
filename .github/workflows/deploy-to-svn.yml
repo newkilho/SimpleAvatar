@@ -17,9 +17,9 @@ jobs:
     - name: Setup Subversion
       run: sudo apt-get install subversion
 
-    - name: Checkout SVN repository
+    - name: Checkout SVN repository (trunk only)
       run: |
-        svn checkout https://plugins.svn.wordpress.org/kilho-simple-avatar/ --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        svn checkout https://plugins.svn.wordpress.org/kilho-simple-avatar/trunk --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive svn/trunk
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
@@ -42,8 +42,8 @@ jobs:
     - name: Create new tag directory
       run: |
         stable_tag=${{ env.stable_tag }}
-        svn cp svn/trunk svn/tags/$stable_tag --parents --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
-        svn commit -m "Tagging version $stable_tag" svn/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        svn cp svn/trunk https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        svn commit -m "Tagging version $stable_tag" https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
