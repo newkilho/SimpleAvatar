@@ -39,11 +39,15 @@ jobs:
           exit 0
         fi
 
-    - name: Create new tag directory
+    - name: Create new tag directory if it doesn't exist
       run: |
         stable_tag=${{ env.stable_tag }}
-        svn cp svn/trunk https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
-        svn commit -m "Tagging version $stable_tag" https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        if ! svn list https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive; then
+          svn cp svn/trunk https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+          svn commit -m "Tagging version $stable_tag" https://plugins.svn.wordpress.org/kilho-simple-avatar/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        else
+          echo "Tag $stable_tag already exists. Skipping tag creation."
+        fi
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
