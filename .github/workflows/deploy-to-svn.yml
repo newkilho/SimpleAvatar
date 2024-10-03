@@ -1,0 +1,35 @@
+name: Deploy to WordPress SVN
+
+on:
+  push:
+    branches:
+      - main  # 트리거할 브랜치 (예: main)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Git repository
+      uses: actions/checkout@v3
+
+    - name: Setup Subversion
+      run: sudo apt-get install subversion
+
+    - name: Checkout SVN repository
+      run: |
+        svn checkout https://plugins.svn.wordpress.org/kilho-simple-avatar/ --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive svn
+      env:
+        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+
+    - name: Sync Git to SVN
+      run: |
+        rm -rf svn/trunk/*
+        cp -R * svn/trunk/
+        cd svn
+        svn add --force trunk/*
+        svn commit -m "Deploying new version to WordPress SVN" --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+      env:
+        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
