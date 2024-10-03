@@ -17,23 +17,29 @@ jobs:
     - name: Setup Subversion
       run: sudo apt-get install subversion
 
-    - name: Output SVN_USERNAME for debugging
-      run: echo "SVN_USERNAME is ${{ secrets.SVN_USERNAME }}"
-
     - name: Checkout SVN repository
       run: |
-        svn checkout https://plugins.svn.wordpress.org/kilho-simple-avatar/ --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive --no-auth-cache svn
+        svn checkout https://plugins.svn.wordpress.org/kilho-simple-avatar/ --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive svn
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
 
-    - name: Sync Git to SVN
+    - name: Extract stable tag from readme.txt
+      id: get_stable_tag
       run: |
-        rm -rf svn/trunk/*
-        rsync -a --exclude='svn' ./ svn/trunk/
-        cd svn
-        svn add --force trunk/*
-        svn commit -m "Deploying new version to WordPress SVN" --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        stable_tag=$(grep -i "Stable tag:" readme.txt | awk '{print $3}')
+        echo "Stable tag is $stable_tag"
+        echo "::set-output name=stable_tag::$stable_tag"
+
+    - name: Create new tag directory
+      run: |
+        stable_tag=${{ steps.get_stable_tag.outputs.stable_tag }}
+        if [ -z "$stable_tag" ]; then
+          echo "Stable tag is empty. Please check readme.txt"
+          exit 1
+        fi
+        svn cp svn/trunk svn/tags/$stable_tag --parents --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive
+        svn commit -m "Tagging version $stable_tag" svn/tags/$stable_tag --username ${{ secrets.SVN_USERNAME }} --password ${{ secrets.SVN_PASSWORD }} --non-interactive --no-auth-cache
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
