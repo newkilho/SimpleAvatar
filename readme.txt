@@ -1,6 +1,6 @@
 === Kilho's Simple Avatar ===
 Contributors:   newkilho
-Donate link:    https://kilho.net/
+Donate link:    https://go.kilho.net/donate
 Tags:           avatar, user, profile, picture, gravatar
 Tested up to:   6.6
 Stable tag:     0.9.0
