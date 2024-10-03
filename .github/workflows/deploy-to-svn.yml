@@ -29,11 +29,10 @@ jobs:
       run: |
         stable_tag=$(grep -i "Stable tag:" readme.txt | awk '{print $3}')
         echo "Stable tag is $stable_tag"
-        echo "::set-output name=stable_tag::$stable_tag"
+        echo "stable_tag=$stable_tag" >> $GITHUB_ENV
 
     - name: Create new tag directory
       run: |
-        stable_tag=${{ steps.get_stable_tag.outputs.stable_tag }}
         if [ -z "$stable_tag" ]; then
           echo "Stable tag is empty. Please check readme.txt"
           exit 1
@@ -43,3 +42,4 @@ jobs:
       env:
         SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        stable_tag: ${{ env.stable_tag }}
